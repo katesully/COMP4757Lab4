@@ -1,5 +1,12 @@
+/**
+ * Date: 2024-10-09
+ * Description: This file contains all the messages for the users module
+ * Note: ChatGPT was used in this assignment for general debugging and method selection queries.
+ */
+
 const http = require('http');
 const url = require('url');
+const messages = require('./lang/messages/en/users.js');   
 
 // Array to hold the dictionary
 let dictionary = [];
@@ -38,12 +45,12 @@ const server = http.createServer((req, res) => {
                 res.writeHead(404, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     requestNumber: requestCount,
-                    message: `Word '${word}' not found!`
+                    message: messages.notFound.replace('%1', word)
                 }));
             }
         } else {
             res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: "Query parameter 'word' is required" }));
+            res.end(JSON.stringify({ message: messages.wordRequired }));
         }
     } else if (parsedUrl.pathname === '/api/definitions' && method === 'POST') {
         // Add a new definition
@@ -59,7 +66,7 @@ const server = http.createServer((req, res) => {
 
                 if (!word || !definition || typeof word !== 'string' || typeof definition !== 'string') {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: 'Both word and definition must be valid strings.' }));
+                    res.end(JSON.stringify({ message: messages.validStrings }));
                     return;
                 }
 
@@ -69,25 +76,25 @@ const server = http.createServer((req, res) => {
                     res.writeHead(409, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         requestNumber: requestCount,
-                        message: `Warning! Word '${word}' already exists.`
+                        message: messages.warningExists.replace('%1', word).replace('%1', requestCount)
                     }));
                 } else {
                     dictionary.push({ word, definition });
                     res.writeHead(201, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         requestNumber: requestCount,
-                        message: `New entry recorded: '${word}: ${definition}'`,
+                        message: `${messages.newEntry.replace('%1', requestCount)} '${word}: ${definition}'`,
                         totalEntries: dictionary.length
                     }));
                 }
             } catch (error) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: 'Invalid JSON format' }));
+                res.end(JSON.stringify({ message: messages.invalidFormat }));
             }
         });
     } else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: 'Not Found' }));
+        res.end(JSON.stringify({ message: messages.invalidPath }));
     }
 });
 
