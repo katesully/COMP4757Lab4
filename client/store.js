@@ -6,7 +6,7 @@
 
 // store.js
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://comp4757lab4.onrender.com';
 
 document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submitBtn');
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = JSON.stringify({ word, definition });
 
         const xhr = new XMLHttpRequest();
-        // Replace 'https://yourDomainName2.xyz' with your actual Server 2 URL
+
         xhr.open('POST', `${API_URL}/api/definitions`, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
 
@@ -43,7 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (xhr.status === 201 || xhr.status === 409) {
                 const response = JSON.parse(xhr.responseText);
                 storeResult.innerHTML = `<strong>${response.message}</strong><br>${messages.store.entries}${response.totalEntries || 'N/A'}`;
-                storeResult.style.color = 'green';
+                if (response.totalEntries) {
+                    storeResult.style.color = 'green';
+                } else {
+                    storeResult.style.color = 'red';
+                }
             } else {
                 const response = JSON.parse(xhr.responseText);
                 storeResult.textContent = `${messages.store.error}${response.message}`;
@@ -59,3 +63,4 @@ document.addEventListener('DOMContentLoaded', () => {
         xhr.send(data);
     });
 });
+
