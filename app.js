@@ -76,7 +76,7 @@ const server = http.createServer((req, res) => {
                     res.writeHead(409, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({
                         requestNumber: requestCount,
-                        message: messages.warningExists.replace('%1', word).replace('%2', requestCount)
+                        message: messages.warningExists.replace('%1', requestCount).replace('%1', word)
                     }));
                 } else {
                     dictionary.push({ word, definition });
